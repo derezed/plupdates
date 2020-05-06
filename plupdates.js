@@ -1,8 +1,8 @@
 const puppeteer = require("puppeteer");
 const delay = require("@trendyminds/delay");
 const nodemailer = require("nodemailer");
-const CONFIG = require("./config.json");
-const emailConfig = require("./emailConfig");
+const CONFIG = require("./config/config.json");
+const emailConfig = require("./config/emailConfig");
 
 this.browser = null;
 this.page = null;
