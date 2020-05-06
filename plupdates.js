@@ -40,19 +40,21 @@ async function notifyOfUpdates(preppedArray = null) {
   });
 
   const mailOptions = {
-    from: this.emailConfig.user,
+    from: emailConfig.user,
     to: this.currentSite.recipient,
     subject: `${this.currentSite.name} has updates availiable.`,
     html: emailMarkup
   }
 
-  await transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log(`Email sent: ${info.response}`);
-    }
-  });
+  if (preppedArray.length) {
+    await transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(`Email sent: ${info.response}`);
+      }
+    });
+  }
 
   await this.browser.close();
 }
