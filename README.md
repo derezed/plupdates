@@ -1,4 +1,4 @@
-# Plupdates
+# Plupdates (Plugin Updates)
 
 Node and Puppeteer driven tool to check your sites plugins for updates.
 
