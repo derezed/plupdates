@@ -36,7 +36,7 @@ This tool will *not* update your plugins. It will only check for udpates.
 | `loginUrl`           | Url to login page                                 | "https://foo.com/wp-login.php"
 | `user`               | CMS user name                                     | "fooAdmin"
 | `password`           | CMS user password                                 | "hunter2"
-| `pluginsUrl`         | Url to plugins page                               | "https://foo.com/wp-admin/plugins.php
+| `pluginsUrl`         | Url to plugins page                               | "https://foo.com/wp-admin/plugins.php"
 | `loginButton`        | CSS selector of submit button on login page       | "#wp-submit"
 | `updatesElement`     | CSS selector of update text row on plugins page   | ".plugin-update .update-message"
 | `recipient`          | Who to send the email to                          | "user@foo.com"
@@ -44,7 +44,7 @@ This tool will *not* update your plugins. It will only check for udpates.
 ### Email Config Options
 
 | Key               | Description                        | Example
-|:------------------|:-----------------------------------|:------------------|
+|:------------------|:-----------------------------------|:----------------|
 | `service`         | SMTP email service                 | "gmail"
 | `user`            | SMTP email user                    | "bar@foo.com"
 | `clientId`        | Client ID from SMTP api            | 
