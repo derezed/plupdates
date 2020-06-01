@@ -8,24 +8,11 @@ this.browser = null;
 this.page = null;
 this.currentSite = null;
 
-async function notifyOfUpdates(preppedArray = null) {
-  console.log("Beginning email creation.");
-  let updatesList = "";
+async function closeBrowser() {
+  await this.browser.close();
+}
 
-  preppedArray.forEach((update)=> {
-    updatesList += `<li>${update}</li>`;
-  })
-  
-  const date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
-
-  const emailMarkup = `
-  <p>The following items have updates on ${this.currentSite.name} as of: ${date}.</p>
-  <ul>
-  ${updatesList}
-  </ul>
-  <p>This is an automated email. You can respond to it, but why would you do that to me?</>
-  `;
-
+async function sendEmail(emailMarkup) {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -47,16 +34,51 @@ async function notifyOfUpdates(preppedArray = null) {
     html: emailMarkup
   }
 
+  console.log("Sending email");
+
+  // try {
+  //   transporter.sendMail(mailOptions, (error, info) => {
+  //     console.log(`Email sent: ${info.response}`);
+  //     closeBrowser();
+  //   });
+  // } catch (error) {
+  //   console.log(error);
+  //   closeBrowser();
+  // }
+
+  const sendMail = await transporter.sendMail(mailOptions);
+
+  if (sendMail.response) {
+    console.log(`Email sent for ${this.currentSite.name}`);
+  } else {
+    console.log(`Email send for ${this.currentSite.name} failed.`)
+  }
+
+  await closeBrowser();
+}
+
+async function notifyOfUpdates(preppedArray = null) {
+  console.log("Beginning email creation.");
+  let updatesList = "";
+
+  preppedArray.forEach((update)=> {
+    updatesList += `<li>${update}</li>`;
+  })
+  
+  const date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+
+  const emailMarkup = `
+  <p>The following items have updates on ${this.currentSite.name} as of: ${date}.</p>
+  <ul>
+  ${updatesList}
+  </ul>
+  <p>This is an automated email. You can respond to it, but why would you do that to me?</>
+  `;
+
   if (preppedArray.length) {
-    console.log("Sending email");
-    try {
-      await transporter.sendMail(mailOptions, async (error, info) => {
-        console.log(`Email sent: ${info.response}`);
-      });
-      await this.browser.close();
-    } catch (error) {
-      console.log(error);
-    }
+    await sendEmail(emailMarkup);
+  } else {
+    await closeBrowser();
   }
 }
 
