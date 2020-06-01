@@ -120,7 +120,7 @@ async function init() {
   for (let i = 0; i < CONFIG.length; i++) {
     this.currentSite = CONFIG[i].site;
     
-    this.browser = await puppeteer.launch({headless: false});
+    this.browser = await puppeteer.launch({headless: true});
     this.page = await this.browser.newPage();
     await page.goto(this.currentSite.loginUrl);
 
