@@ -49,14 +49,14 @@ async function notifyOfUpdates(preppedArray = null) {
 
   if (preppedArray.length) {
     console.log("Sending email");
-    await transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log(error);
-      } else {
+    try {
+      await transporter.sendMail(mailOptions, async (error, info) => {
         console.log(`Email sent: ${info.response}`);
-        await this.browser.close();
-      }
-    });
+      });
+      await this.browser.close();
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
