@@ -60,7 +60,9 @@ async function notifyOfUpdates(preppedArray = null) {
     html: emailMarkup
   }
   
+  delay(5000);
   await this.emailsToSend.push(mailOptions);
+  delay(5000);
   await closeBrowser();
 }
 
@@ -87,7 +89,7 @@ async function prepUpdatesArray(availableUpdates) {
 
 async function queryForUpdates() {
   console.log("Querying for updates");
-  await delay(5000);
+  await delay(10000);
   const sel = this.currentSite.updatesElement;
 
   const availableUpdates = await this.page.evaluate((sel) => {
