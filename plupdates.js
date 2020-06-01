@@ -33,20 +33,6 @@ async function sendEmails() {
   for (let i = 0; i < this.emailsToSend.length; i++) {
     await transporter.sendMail(this.emailsToSend[i]);
   }
-
-  // console.log("Sending email");
-
-  // const sendMail = await transporter.sendMail(mailOptions);
-
-  // console.log(sendMail);
-
-  // if (sendMail.response) {
-  //   console.log(`Email sent for ${this.currentSite.name}`);
-  // } else {
-  //   console.log(`Email send for ${this.currentSite.name} failed.`)
-  // }
-
-  // await closeBrowser();
 }
 
 async function notifyOfUpdates(preppedArray = null) {
