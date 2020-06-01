@@ -7,26 +7,15 @@ const emailConfig = require("./config/emailConfig");
 this.browser = null;
 this.page = null;
 this.currentSite = null;
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    type: "OAuth2",
-    user: emailConfig.user,
-    clientId: emailConfig.clientId,
-    clientSecret: emailConfig.clientSecret,
-    refreshToken: emailConfig.refreshToken,
-    accessToken: emailConfig.accessToken
-  }
-});
+this.emailsToSend = null;
 
 async function closeBrowser() {
   await this.browser.close();
 }
 
-async function sendEmail(emailMarkup) {
+async function sendEmails() {
+  console.log("Sending Emails");
+
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -40,27 +29,24 @@ async function sendEmail(emailMarkup) {
       accessToken: emailConfig.accessToken
     }
   });
-
-  const mailOptions = {
-    from: emailConfig.user,
-    to: this.currentSite.recipient,
-    subject: `${this.currentSite.name} has updates availiable.`,
-    html: emailMarkup
+  
+  for (let i = 0; i < this.emailsToSend.length; i++) {
+    await transporter.sendMail(this.emailsToSend[i]);
   }
 
-  console.log("Sending email");
+  // console.log("Sending email");
 
-  const sendMail = await transporter.sendMail(mailOptions);
+  // const sendMail = await transporter.sendMail(mailOptions);
 
-  console.log(sendMail);
+  // console.log(sendMail);
 
-  if (sendMail.response) {
-    console.log(`Email sent for ${this.currentSite.name}`);
-  } else {
-    console.log(`Email send for ${this.currentSite.name} failed.`)
-  }
+  // if (sendMail.response) {
+  //   console.log(`Email sent for ${this.currentSite.name}`);
+  // } else {
+  //   console.log(`Email send for ${this.currentSite.name} failed.`)
+  // }
 
-  await closeBrowser();
+  // await closeBrowser();
 }
 
 async function notifyOfUpdates(preppedArray = null) {
@@ -81,11 +67,15 @@ async function notifyOfUpdates(preppedArray = null) {
   <p>This is an automated email. You can respond to it, but why would you do that to me?</>
   `;
 
-  if (preppedArray.length) {
-    await sendEmail(emailMarkup);
-  } else {
-    await closeBrowser();
+  const mailOptions = {
+    from: emailConfig.user,
+    to: this.currentSite.recipient,
+    subject: `${this.currentSite.name} has updates availiable.`,
+    html: emailMarkup
   }
+  
+  await this.emailsToSend.push(mailOptions);
+  await closeBrowser();
 }
 
 async function prepUpdatesArray(availableUpdates) {
@@ -102,7 +92,11 @@ async function prepUpdatesArray(availableUpdates) {
     }
   });
 
-  await notifyOfUpdates(preppedArray);
+  if (preppedArray.length) {
+    await notifyOfUpdates(preppedArray);
+  } else {
+    await closeBrowser();
+  }
 }
 
 async function queryForUpdates() {
@@ -150,12 +144,14 @@ async function login() {
 }
 
 async function init() {
+  this.emailsToSend = [];
+
   for (let i = 0; i < CONFIG.length; i++) {
     this.currentSite = CONFIG[i].site;
     
     console.log("Launching browser...");
     // Uncomment if running on non-arm processor
-    this.browser = await puppeteer.launch({headless: true});
+    this.browser = await puppeteer.launch({headless: false});
     console.log("Browser launched.");
     // For Raspberry Pi; Puppeteer isn't installing arm version of chrome/chromium, this should tell the script to use the chromium registered in path.
     // this.browser = await puppeteer.launch({executablePath: 'chromium-browser', headless: true});
@@ -167,6 +163,9 @@ async function init() {
 
     await login();
   }
+
+  await closeBrowser();
+  await sendEmails();
 }
 
 init();
