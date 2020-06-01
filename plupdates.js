@@ -135,6 +135,7 @@ async function init() {
     console.log(`Navigating to ${this.currentSite.loginUrl}`);
 
     this.page = await this.browser.newPage();
+    await this.page.setDefaultNavigationTimeout(0);
     await page.goto(this.currentSite.loginUrl);
 
     await login();
