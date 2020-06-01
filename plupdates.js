@@ -54,11 +54,10 @@ async function notifyOfUpdates(preppedArray = null) {
         console.log(error);
       } else {
         console.log(`Email sent: ${info.response}`);
+        await this.browser.close();
       }
     });
   }
-
-  await this.browser.close();
 }
 
 async function prepUpdatesArray(availableUpdates) {
