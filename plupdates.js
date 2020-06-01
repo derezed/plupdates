@@ -9,6 +9,7 @@ this.page = null;
 this.currentSite = null;
 
 async function notifyOfUpdates(preppedArray = null) {
+  console.log("Beginning email creation.");
   let updatesList = "";
 
   preppedArray.forEach((update)=> {
@@ -47,6 +48,7 @@ async function notifyOfUpdates(preppedArray = null) {
   }
 
   if (preppedArray.length) {
+    console.log("Sending email");
     await transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
@@ -60,6 +62,7 @@ async function notifyOfUpdates(preppedArray = null) {
 }
 
 async function prepUpdatesArray(availableUpdates) {
+  console.log("Prepping updates");
   const preppedArray = [];
 
   availableUpdates.forEach((update) => {
@@ -76,6 +79,7 @@ async function prepUpdatesArray(availableUpdates) {
 }
 
 async function queryForUpdates() {
+  console.log("Querying for updates");
   await delay(5000);
   const sel = this.currentSite.updatesElement;
 
@@ -91,11 +95,13 @@ async function queryForUpdates() {
 }
 
 async function navigateToPlugins() {
+  console.log(`Navigating to ${this.currentSite.pluginsUrl}`);
   await this.page.goto(this.currentSite.pluginsUrl);
   await queryForUpdates();
 }
 
 async function login() {
+  console.log(`Staring login for ${this.currentSite.name}`);
   await delay(500);
 
   if (this.currentSite.type.toLowerCase() === "wordpress") {
@@ -120,7 +126,14 @@ async function init() {
   for (let i = 0; i < CONFIG.length; i++) {
     this.currentSite = CONFIG[i].site;
     
+    console.log("Launching browser...");
+    // Uncomment if running on non-arm processor
     this.browser = await puppeteer.launch({headless: true});
+    console.log("Browser launched.");
+    // For Raspberry Pi; Puppeteer isn't installing arm version of chrome/chromium, this should tell the script to use the chromium registered in path.
+    // this.browser = await puppeteer.launch({executablePath: 'chromium-browser', headless: true});
+    console.log(`Navigating to ${this.currentSite.loginUrl}`);
+
     this.page = await this.browser.newPage();
     await page.goto(this.currentSite.loginUrl);
 
