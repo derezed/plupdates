@@ -8,6 +8,20 @@ this.browser = null;
 this.page = null;
 this.currentSite = null;
 
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    type: "OAuth2",
+    user: emailConfig.user,
+    clientId: emailConfig.clientId,
+    clientSecret: emailConfig.clientSecret,
+    refreshToken: emailConfig.refreshToken,
+    accessToken: emailConfig.accessToken
+  }
+});
+
 async function closeBrowser() {
   await this.browser.close();
 }
@@ -36,17 +50,9 @@ async function sendEmail(emailMarkup) {
 
   console.log("Sending email");
 
-  // try {
-  //   transporter.sendMail(mailOptions, (error, info) => {
-  //     console.log(`Email sent: ${info.response}`);
-  //     closeBrowser();
-  //   });
-  // } catch (error) {
-  //   console.log(error);
-  //   closeBrowser();
-  // }
-
   const sendMail = await transporter.sendMail(mailOptions);
+
+  console.log(sendMail);
 
   if (sendMail.response) {
     console.log(`Email sent for ${this.currentSite.name}`);
