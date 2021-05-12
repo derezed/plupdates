@@ -5,7 +5,7 @@
   "main": "plupdates.js",
   "dependencies": {
     "@trendyminds/delay": "^1.1.0",
-    "nodemailer": "^6.4.8",
+    "nodemailer": "^6.4.16",
     "puppeteer": "^3.2.0"
   },
   "devDependencies": {},
